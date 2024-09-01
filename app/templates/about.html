@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - CramMates</title>
+    <style>
+        /* CSS goes here */
+        @font-face {
+            font-family: 'FK Display';
+            src: url("{{ url_for('static', filename='fonts/FKDisplay-RegularAlt.ttf') }}") format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'FK Display';
+            src: url("{{ url_for('static', filename='fonts/FKDisplay-RegularAlt.ttf') }}") format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'FK Display', Arial, sans-serif;
+            background-color: #F1F0E8;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #418dc7;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        section {
+            padding: 120px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CramMates</h1>
+        <nav>
+            <ul id="nav-links">
+                <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li><a href="{{ url_for('main.calendar') }}">Calendar</a></li>
+                <li><a href="{{ url_for('main.about') }}">About</a></li>
+                
+                {% if current_user.is_authenticated %}
+                    <li id="profile-tab"><a href="{{ url_for('main.profile') }}">My Profile</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                {% else %}
+                    <li id="signup-tab"><a href="{{ url_for('main.signup') }}">Sign Up</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <section id="about">
+        <h2>About Us</h2>
+        <p>CramMates is a platform designed to help students connect with their peers for better learning experiences. Whether you need help with a specific subject or just want to study with someone, we make it easy to find the right study partner.</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 CramMates. All rights reserved.</p>
+    </footer>
+</body>
+</html>

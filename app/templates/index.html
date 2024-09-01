@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CramMates</title>
+    <style>
+        /* CSS goes here */
+        @font-face {
+    font-family: 'FK Display';
+    src: url("{{ url_for('static', filename='fonts/FKDisplay-RegularAlt.ttf') }}") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'FK Display';
+    src: url("{{ url_for('static', filename='fonts/FKDisplay-Regular.ttf') }}") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+        body {
+            font-family: 'FK Display', Arial, sans-serif;
+            background-color: #F1F0E8;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #418dc7;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        #hero {
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #f1d4d7 0%, #f7d3b6 50%, #d6e6ff 100%);
+            padding: 20px;
+            flex-direction: column;
+        }
+
+        .hero-content h2 {
+            font-size: 3em;
+            margin: 0;
+            color: #418dc7;
+        }
+
+        .hero-content p {
+            font-size: 1.2em;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .hero-content .btn {
+            background-color: #418dc7;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 15px;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        #content-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            flex-direction: row;
+        }
+
+        #content-wrapper img {
+            max-width: 50%;
+            height: 500px;
+            border-radius: 15px;
+            object-fit: cover;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* More pronounced shadow for depth */
+        }
+
+        #topic-image-1 {
+            margin-right: -10%;
+            position: relative;
+            left: -15%;
+        }
+
+        #topic-image-2 {
+            margin-left: -10%;
+            position: relative;
+            right: -15%;
+        }
+
+        .feature {
+            max-width: 40%;
+            padding: 20px;
+        }
+
+        .feature h3 {
+            color: #418dc7;
+            margin-top: 0;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .feature p {
+            font-size: 1.2em;
+        }
+
+        .testimonials, .faq {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input, button, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 15px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #418dc7;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ADC4CE;
+        }
+
+        .testimonials, .faq {
+            background-color: #F1F0E8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonials h2, .faq h2 {
+            color: #4182c7;
+        }
+
+        footer {
+            background-color: #333333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        #calendar {
+            margin: 20px 0;
+        }
+
+        .gradient-background {
+    background: radial-gradient(circle at 10% 20%, #f0c3c5, transparent 30%),
+                radial-gradient(circle at 90% 20%, #fad0c4, transparent 30%),
+                radial-gradient(circle at 10% 80%, #fad0c4, transparent 30%),
+                radial-gradient(circle at 90% 80%, #fcb69f, transparent 30%),
+                radial-gradient(circle at center, #c1c8e4, transparent 40%);
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+        .gradient-background img {
+            border-radius: 15px; /* Ensure image has rounded corners */
+        }
+
+        .carousel-container {
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            display: flex;
+            gap: 10px;
+            padding: 20px;
+            justify-content: center;
+        }
+
+        .carousel-item {
+            flex: none;
+            scroll-snap-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            text-align: center;
+        }
+
+        .carousel-item h3 {
+            color: #418dc7;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 0;
+        }
+
+        .carousel-item p {
+            font-size: 1.1em;
+        }
+
+        .divider {
+            border-top: 2px solid #ccc;
+            margin: 20px 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CramMates</h1>
+        <nav>
+            <ul id="nav-links">
+                <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li><a href="{{ url_for('main.calendar') }}">Calendar</a></li>
+                <li><a href="{{ url_for('main.about') }}">About</a></li>
+                
+                {% if current_user.is_authenticated %}
+                    <li id="profile-tab"><a href="{{ url_for('main.profile') }}">My Profile</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                {% else %}
+                    <li id="signup-tab"><a href="{{ url_for('main.signup') }}">Sign Up</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <div class="hero-content">
+            <h2>Empower your study sessions today</h2>
+            <p>Enhance your learning experience by easily organizing group study sessions with your classmates and peers on CramMates.</p>
+            <a href="calendar.html" class="btn">Schedule Session</a>
+        </div>
+    </section>
+
+    <!-- First Section with Image and Feature -->
+    <section id="content-wrapper">
+        <img id="topic-image-1" src="https://image.cnbcfm.com/api/v1/image/106922887-1628206615260-gettyimages-887132600-as1700__08.jpeg?v=1628206641" alt="Group Study Session">
+        <div class="feature">
+            <h3>Collaborate with classmates</h3>
+            <p>CramMates allows you to easily collaborate with your classmates and peers by organizing group study sessions. Work together, share notes, and discuss challenging topics to enhance your understanding of the subject matter.</p>
+        </div>
+    </section>
+
+    <!-- Second Section with Image and Feature -->
+    <section id="content-wrapper" class="gradient-background">
+        <div class="feature">
+            <h3>Increase productivity</h3>
+            <p>Increase your productivity by studying in a group setting. Engage in focused discussions, ask questions, and receive immediate feedback from your peers, helping you to grasp concepts more effectively and efficiently.</p>
+        </div>
+        <img id="topic-image-2" src="https://www.macalester.edu/wp-content/uploads/2020/02/admissions-admitted-hero-e1648069978971.jpg" alt="College Students on Campus">
+    </section>
+
+  <!-- How it works Section -->
+<section id="how-it-works">
+    <h2 style="text-align: center; font-size: 2.5em; color: #418dc7;">How it Works</h2>
+    <div style="padding: 20px; text-align: left; max-width: 800px; margin: auto;">
+        <div class="how-it-works-step">
+            <i class="fas fa-user"></i>
+            <div>
+                <h3>1. Tell us about yourself</h3>
+                <p>Fill in your university and course details to help us match you with relevant study groups.</p>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="how-it-works-step">
+            <i class="fas fa-search"></i>
+            <div>
+                <h3>2. Discover Study Sessions</h3>
+                <p>Explore existing study groups or sessions related to your courses and interests.</p>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="how-it-works-step">
+            <i class="fas fa-users"></i>
+            <div>
+                <h3>3. Join or Start a Study Session</h3>
+                <p>Join an existing session or start a new one with students from your course.</p>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="how-it-works-step">
+            <i class="fas fa-comments"></i>
+            <div>
+                <h3>4. Find your Community</h3>
+                <p>Connect with broader communities within your university or study field for additional support and resources.</p>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="how-it-works-step">
+            <i class="fas fa-handshake"></i>
+            <div>
+                <h3>5. Connect and Collaborate</h3>
+                <p>Engage in meaningful conversations, plan your study sessions, and collaborate effectively with your peers.</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Font Awesome CDN Link (Include this in the <head> section of your HTML) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .how-it-works-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    
+        .how-it-works-step i {
+            font-size: 2em;
+            color: #418dc7;
+            margin-right: 15px;
+        }
+    
+        .how-it-works-step h3 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+    
+        .how-it-works-step p {
+            margin: 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+    
+        .divider {
+            border-top: 2px solid #ccc;
+            margin: 20px 0;
+            width: 100%;
+        }
+    </style>
+        <section class="testimonials">
+            <h2>Testimonials</h2>
+            <p>"CramMates helped me find the perfect study group!" - Jane Doe</p>
+            <p>"An amazing tool for connecting with classmates!" - John Smith</p>
+        </section>
+        <section class="faq">
+            <h2>Frequently Asked Questions</h2>
+            <p><strong>How does CramMates work?</strong> Sign up, list your courses, and find study partners.</p>
+            <p><strong>Is CramMates free?</strong> Yes, it's completely free for students.</p>
+        </section>
+        <footer>
+            <p>&copy; 2024 CramMates. All rights reserved.</p>
+        </footer>
+        <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    </body>
+    </html>
+    ```

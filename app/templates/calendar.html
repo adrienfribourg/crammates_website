@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CramMates Calendar</title>
+    <link href='https://unpkg.com/fullcalendar@5.10.2/main.min.css' rel='stylesheet' />
+    <style>
+        /* CSS goes here */
+        @font-face {
+            font-family: 'FK Display';
+            src: url("{{ url_for('static', filename='fonts/FKDisplay-RegularAlt.ttf') }}") format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'FK Display';
+            src: url("{{ url_for('static', filename='fonts/FKDisplay-RegularAlt.ttf') }}") format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+        body {
+            font-family: 'FK Display', Arial, sans-serif;
+            background-color: #F1F0E8;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #418dc7;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        #calendar {
+            margin: 20px;
+        }
+
+        section {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input, button, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 15px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 15px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CramMates</h1>
+        <nav>
+            <ul id="nav-links">
+                <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li><a href="{{ url_for('main.calendar') }}">Calendar</a></li>
+                <li><a href="{{ url_for('main.about') }}">About</a></li>
+                
+                {% if current_user.is_authenticated %}
+                    <li id="profile-tab"><a href="{{ url_for('main.profile') }}">My Profile</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                {% else %}
+                    <li id="signup-tab"><a href="{{ url_for('main.signup') }}">Sign Up</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <section id="calendar">
+        <h2>Study Sessions Calendar</h2>
+        <div id='calendar'></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 CramMates. All rights reserved.</p>
+    </footer>
+
+    <!-- Add Session Modal -->
+    <div id="addSessionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add a Study Session</h2>
+            <form id="add-session-form">
+                <div class="form-group">
+                    <input type="text" name="title" placeholder="Title" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="course" placeholder="Course" required>
+                </div>
+                <div class="form-group">
+                    <input type="datetime-local" name="start" required>
+                </div>
+                <div class="form-group">
+                    <input type="datetime-local" name="end" required>
+                </div>
+                <div class="form-group">
+                    <textarea name="description" placeholder="Description"></textarea>
+                </div>
+                <button type="submit" class="btn">Add Session</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Session Modal -->
+    <div id="viewSessionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Study Session Details</h2>
+            <p><strong>Title:</strong> <span id="view-title"></span></p>
+            <p><strong>Course:</strong> <span id="view-course"></span></p>
+            <p><strong>Description:</strong> <span id="view-description"></span></p>
+            <p><strong>Start:</strong> <span id="view-start"></span></p>
+            <p><strong>End:</strong> <span id="view-end"></span></p>
+            <button id="delete-session" class="btn btn-danger">Delete Session</button>
+        </div>
+    </div>
+
+    <script src='https://unpkg.com/fullcalendar@5.10.2/main.min.js'></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var addSessionModal = document.getElementById('addSessionModal');
+            var viewSessionModal = document.getElementById('viewSessionModal');
+            var closeModalButtons = document.getElementsByClassName('close');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: [], // Empty initially, we'll add events via the form
+                dateClick: function(info) {
+                    // Show modal on date click
+                    addSessionModal.style.display = 'block';
+                    document.querySelector('[name="start"]').value = info.dateStr + "T00:00";
+                    document.querySelector('[name="end"]').value = info.dateStr + "T01:00"; // Default one hour session
+                },
+                eventClick: function(info) {
+                    // Show modal with event details on event click
+                    viewSessionModal.style.display = 'block';
+                    document.getElementById('view-title').textContent = info.event.title;
+                    document.getElementById('view-course').textContent = info.event.extendedProps.course;
+                    document.getElementById('view-description').textContent = info.event.extendedProps.description;
+                    document.getElementById('view-start').textContent = info.event.start.toISOString().slice(0, 16).replace('T', ' ');
+                    document.getElementById('view-end').textContent = info.event.end.toISOString().slice(0, 16).replace('T', ' ');
+
+                    // Delete session
+                    document.getElementById('delete-session').onclick = function() {
+                        if (confirm('Are you sure you want to delete this session?')) {
+                            info.event.remove();
+                            viewSessionModal.style.display = 'none';
+                        }
+                    };
+                }
+            });
+
+            calendar.render();
+
+            // Close the modal when the user clicks on <span> (x)
+            for (let i = 0; i < closeModalButtons.length; i++) {
+                closeModalButtons[i].onclick = function() {
+                    this.parentElement.parentElement.style.display = 'none';
+                };
+            }
+
+            // Close the modal when the user clicks anywhere outside of the modal
+            window.onclick = function(event) {
+                if (event.target == addSessionModal) {
+                    addSessionModal.style.display = 'none';
+                }
+                if (event.target == viewSessionModal) {
+                    viewSessionModal.style.display = 'none';
+                }
+            }
+
+            document.getElementById('add-session-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                var formData = new FormData(event.target);
+                var data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+
+                var newEvent = {
+                    title: data.title,
+                    start: data.start,
+                    end: data.end,
+                    extendedProps: {
+                        course: data.course,
+                        description: data.description
+                    }
+                };
+
+                calendar.addEvent(newEvent);
+
+                console.log('New session added:', newEvent);
+
+                alert('New session added: ' + newEvent.title);
+                event.target.reset();
+                addSessionModal.style.display = 'none'; // Close the modal
+            });
+        });
+    </script>
+</body>
+</html>

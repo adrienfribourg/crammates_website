@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CramMates</title>
+    <style>
+        /* CSS goes here */
+        @font-face {
+            font-family: 'FK Display';
+            src: url("{{ url_for('static', filename='fonts/FKDisplay-RegularAlt.ttf') }}") format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'FK Display';
+            src: url("{{ url_for('static', filename='fonts/FKDisplay-RegularAlt.ttf') }}") format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'FK Display', Arial, sans-serif;
+            background-color: #F1F0E8;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #418dc7;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        section {
+            padding: 120px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 40px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 15px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #418dc7;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ADC4CE;
+        }
+
+        .redirect-link {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        footer {
+            background-color: #333333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CramMates</h1>
+        <nav>
+            <ul id="nav-links">
+                <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li><a href="{{ url_for('main.calendar') }}">Calendar</a></li>
+                <li><a href="{{ url_for('main.about') }}">About</a></li>
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('main.profile') }}">My Profile</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                    <li><a href="{{ url_for('main.signup') }}">Sign Up</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <section id="login">
+        <h2>Login</h2>
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <div class="form-group">
+                <input type="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+
+        <!-- New section for redirecting to the signup page -->
+        <div class="redirect-link">
+            Don't have an account? <a href="{{ url_for('main.signup') }}">Sign up here</a>.
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2024 CramMates. All rights reserved.</p>
+    </footer>
+</body>
+</html>
