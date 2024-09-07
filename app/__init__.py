@@ -9,9 +9,13 @@ login = LoginManager()
 login.login_view = 'auth.login'
 migrate = Migrate()
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__)
-    app.config.from_object(Config)
+    
+    if test_config is None:
+        app.config.from_object(Config)
+    else:
+        app.config.from_mapping(test_config)
 
     # Ensure debug mode is active
     app.config['DEBUG'] = True  # Enforce debug mode
