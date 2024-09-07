@@ -9,16 +9,15 @@ login = LoginManager()
 login.login_view = 'auth.login'
 migrate = Migrate()
 
-def create_app(test_config=None):
+def create_app(config=None):
     app = Flask(__name__)
     
-    if test_config is None:
+    if config is None:
         app.config.from_object(Config)
+    elif isinstance(config, dict):
+        app.config.from_mapping(config)
     else:
-        app.config.from_mapping(test_config)
-
-    # Ensure debug mode is active
-    app.config['DEBUG'] = True  # Enforce debug mode
+        app.config.from_object(config)
 
     # Initialize extensions
     db.init_app(app)
