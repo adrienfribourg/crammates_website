@@ -1,5 +1,6 @@
 from app import db
 from flask_login import UserMixin
+from datetime import datetime
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -15,11 +16,16 @@ class User(UserMixin, db.Model):
 
 class StudySession(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(128), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    date = db.Column(db.DateTime, nullable=False)
-    location = db.Column(db.String(128))
+    topic = db.Column(db.String(128), nullable=False)  # Changed 'title' to 'topic' to match form field
+    date = db.Column(db.Date, nullable=False)  # Ensure it's a date to match input
+    time = db.Column(db.Time, nullable=False)  # Added a separate time field for better control
+    location = db.Column(db.String(128), nullable=False)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return f'<StudySession {self.title}>'
+        return f'<StudySession {self.topic}>'
+
+    @staticmethod
+    def get_upcoming_sessions():
+        """Retrieve all upcoming study sessions ordered by date and time."""
+        return StudySession.query.filter(StudySession.date >= datetime.utcnow()).order_by(StudySession.date, StudySession.time).all()
