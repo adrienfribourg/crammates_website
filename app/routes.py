@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, render_template, flash, redirect, url_for
-from flask_login import login_required, current_user, login_user  # Added login_user
-from werkzeug.security import check_password_hash, generate_password_hash  # Added check_password_hash
+from flask_login import login_required, current_user, login_user
+from werkzeug.security import check_password_hash, generate_password_hash
 from app.models import StudySession, User
 from app import db
 
@@ -81,3 +81,55 @@ def register():
             return redirect(url_for('main.signup'))
 
     return render_template('signup.html')
+
+# Route to add a new study session
+@bp.route('/add_session', methods=['POST'])
+@login_required
+def add_session():
+    try:
+        topic = request.form.get('topic')
+        date = request.form.get('date')
+        time = request.form.get('time')
+        location = request.form.get('location')
+
+        if not topic or not date or not time or not location:
+            flash('Please fill in all fields.', 'danger')
+            return redirect(url_for('main.calendar'))
+
+        # Create a new StudySession object
+        new_session = StudySession(
+            topic=topic, 
+            date=date, 
+            time=time, 
+            location=location, 
+            user_id=current_user.id  # Associate the session with the logged-in user
+        )
+        db.session.add(new_session)
+        db.session.commit()
+
+        flash('Study session added successfully!', 'success')
+        return redirect(url_for('main.calendar'))
+
+    except Exception as e:
+        print(f"Error adding session: {e}")
+        flash('An error occurred while adding the session.', 'danger')
+        return redirect(url_for('main.calendar'))
+
+# Route to fetch all study sessions for the current user
+@bp.route('/get_sessions', methods=['GET'])
+@login_required
+def get_sessions():
+    try:
+        sessions = StudySession.query.filter_by(user_id=current_user.id).all()
+        session_list = [{
+            'topic': session.topic,
+            'date': session.date.strftime('%Y-%m-%d'),
+            'time': session.time,
+            'location': session.location
+        } for session in sessions]
+
+        return jsonify(session_list)
+
+    except Exception as e:
+        print(f"Error fetching sessions: {e}")
+        return jsonify({'error': 'An error occurred while fetching sessions.'}), 500
