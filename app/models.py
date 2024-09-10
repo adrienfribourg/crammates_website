@@ -16,14 +16,14 @@ class User(UserMixin, db.Model):
 
 class StudySession(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    topic = db.Column(db.String(128), nullable=False)  # Changed 'title' to 'topic' to match form field
-    date = db.Column(db.Date, nullable=False)  # Ensure it's a date to match input
-    time = db.Column(db.Time, nullable=False)  # Added a separate time field for better control
-    location = db.Column(db.String(128), nullable=False)
+    title = db.Column(db.String(128), nullable=False)  # Add this field if it doesn't exist
+    course = db.Column(db.String(128), nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    description = db.Column(db.Text, nullable=True)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return f'<StudySession {self.topic}>'
+        return f'<StudySession {self.title}>'
 
     @staticmethod
     def get_upcoming_sessions():
