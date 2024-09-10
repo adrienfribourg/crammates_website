@@ -76,24 +76,31 @@ def register():
     return render_template('signup.html')
 
 # Route to add a new study session
+from datetime import datetime  # Import datetime module
+
 @bp.route('/add_session', methods=['POST'])
 @login_required
 def add_session():
     try:
-        title = request.json.get('title')  # Match front-end data keys
-        course = request.json.get('course')  # Match front-end data keys
-        start = request.json.get('start')  # The start time from front-end
-        end = request.json.get('end')  # The end time from front-end
+        title = request.json.get('title')
+        course = request.json.get('course')
+        start = request.json.get('start')
         description = request.json.get('description')
 
-        if not title or not course or not start or not end:
+        if not title or not course or not start:
             return jsonify({'success': False, 'error': 'Missing required fields.'}), 400
+
+        # Convert the start string to a datetime object
+        try:
+            start_datetime = datetime.fromisoformat(start)
+        except ValueError:
+            return jsonify({'success': False, 'error': 'Invalid date format.'}), 400
 
         # Create a new StudySession object
         new_session = StudySession(
             title=title,
             course=course,
-            date=start,  # Assume this is properly formatted
+            date=start_datetime,  # Use the parsed datetime object
             description=description,
             creator_id=current_user.id
         )
