@@ -115,7 +115,8 @@ def get_sessions():
         session_list = [{
             'title': session.title,
             'course': session.course,
-            'start': session.date.isoformat(),
+            'start': session.date.isoformat(),  # Ensure this is a datetime object
+            'end': session.end_date.isoformat(),  # Assuming you have an end_date field
             'description': session.description
         } for session in sessions]
 
