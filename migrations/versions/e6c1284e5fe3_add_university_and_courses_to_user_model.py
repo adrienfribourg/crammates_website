@@ -36,7 +36,10 @@ def upgrade():
                existing_type=sa.VARCHAR(length=150),
                type_=sa.String(length=256),
                existing_nullable=False)
-        batch_op.drop_column('course')
+
+        # Check if 'course' column exists before trying to drop it
+        if 'course' in [col['name'] for col in inspector.get_columns('user')]:
+            batch_op.drop_column('course')
 
 
 def downgrade():
