@@ -2,8 +2,8 @@ from alembic import op
 import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
-revision = 'new_revision_id'  # Replace with a unique revision ID, like 'b6546207be3a'
-down_revision = 'previous_revision_id'  # Replace with the ID of the last migration, like 'e6c1284e5fe3'
+revision = 'd7f8e2c9a3b4'  # Replace with a unique revision ID, like 'b6546207be3a'
+down_revision = 'e6c1284e5fe3'  # Replace with the ID of the last migration, like 'e6c1284e5fe3'
 branch_labels = None
 depends_on = None
 
