@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         setTimeout(() => {
                             confirmation.style.display = 'none';
                         }, 3000);
+                        fetchSessions(); // Refresh session list after adding
                     } else {
                         alert('An error occurred while adding the session.');
                     }
@@ -63,6 +64,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     sessions.forEach(session => {
                         const listItem = document.createElement('li');
                         listItem.textContent = `${session.topic} on ${session.date} at ${session.time}, Location: ${session.location}`;
+
+                        // Add delete button for each session
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.classList.add('btn', 'btn-danger');
+                        deleteButton.setAttribute('data-id', session.id);  // Add session id to the button
+                        deleteButton.addEventListener('click', function() {
+                            if (confirm('Are you sure you want to delete this session?')) {
+                                deleteSession(session.id);
+                            }
+                        });
+
+                        listItem.appendChild(deleteButton);
                         sessionList.appendChild(listItem);
                     });
                 } else {
@@ -72,6 +86,28 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => {
                 console.error('Error fetching sessions:', error);
             });
+    }
+
+    // Function to delete a session
+    function deleteSession(sessionId) {
+        fetch(`/delete_session/${sessionId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Session deleted successfully');
+                fetchSessions(); // Refresh session list after deletion
+            } else {
+                alert('Failed to delete session.');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting session:', error);
+            alert('An error occurred while trying to delete the session.');
+        });
     }
 
     // Fetch and display sessions when the page loads

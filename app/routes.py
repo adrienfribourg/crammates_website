@@ -132,3 +132,23 @@ def get_sessions():
     except Exception as e:
         print(f"Error fetching sessions: {e}")
         return jsonify({'error': 'An error occurred while fetching sessions.'}), 500
+
+@bp.route('/delete_session/<int:session_id>', methods=['DELETE'])
+@login_required
+def delete_session(session_id):
+    try:
+        # Find the session by ID and ensure the current user is the creator
+        session = StudySession.query.filter_by(id=session_id, creator_id=current_user.id).first()
+
+        if session is None:
+            return jsonify({'success': False, 'error': 'Session not found or you do not have permission to delete this session.'}), 404
+
+        # Delete the session
+        db.session.delete(session)
+        db.session.commit()
+
+        return jsonify({'success': True}), 200
+
+    except Exception as e:
+        print(f"Error deleting session: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
