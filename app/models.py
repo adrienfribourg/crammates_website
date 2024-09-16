@@ -16,9 +16,10 @@ class User(UserMixin, db.Model):
 
 class StudySession(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(128), nullable=False)  # Add this field if it doesn't exist
+    title = db.Column(db.String(128), nullable=False)
     course = db.Column(db.String(128), nullable=False)
     date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.DateTime, nullable=True)  # Add this column
     description = db.Column(db.Text, nullable=True)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 

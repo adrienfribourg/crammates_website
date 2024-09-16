@@ -123,7 +123,7 @@ def get_sessions():
             'title': session.title,
             'course': session.course,
             'start': session.date.isoformat(),  # Ensure this is a datetime object
-            'end': session.end_date.isoformat(),  # Assuming you have an end_date field
+            # Remove the 'end' field if it's not used
             'description': session.description
         } for session in sessions]
 
