@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         deleteButton.classList.add('btn', 'btn-danger');
                         deleteButton.setAttribute('data-id', session.id);  // Add session id to the button
                         deleteButton.addEventListener('click', function() {
+                            console.log('Delete button clicked for session ID:', session.id); // Add this line
                             if (confirm('Are you sure you want to delete this session?')) {
                                 deleteSession(session.id);
                             }
@@ -90,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to delete a session
     function deleteSession(sessionId) {
+        console.log('Deleting session with ID:', sessionId);  // Add this line
         fetch(`/delete_session/${sessionId}`, {
             method: 'DELETE',
             headers: {
@@ -97,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
         .then(response => {
+            console.log('Response from delete:', response); // Add this line
             if (response.ok) {
                 alert('Session deleted successfully');
                 fetchSessions(); // Refresh session list after deletion
