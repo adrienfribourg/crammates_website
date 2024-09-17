@@ -143,10 +143,14 @@ def delete_session(session_id):
         if session is None:
             return jsonify({'success': False, 'error': 'Session not found or you do not have permission to delete this session.'}), 404
 
+        # Print session details for debugging
+        print(f"Deleting session: {session.title}, ID: {session.id}")
+
         # Delete the session
         db.session.delete(session)
         db.session.commit()
-
+        
+        print(f"Session deleted: {session.id}")
         return jsonify({'success': True}), 200
 
     except Exception as e:
