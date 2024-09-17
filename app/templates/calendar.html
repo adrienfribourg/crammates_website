@@ -237,7 +237,11 @@
             document.getElementById('view-course').textContent = info.event.extendedProps.course;
             document.getElementById('view-description').textContent = info.event.extendedProps.description;
             document.getElementById('view-start').textContent = info.event.start.toISOString().slice(0, 16).replace('T', ' ');
+        if (info.event.end) {
             document.getElementById('view-end').textContent = info.event.end.toISOString().slice(0, 16).replace('T', ' ');
+        } else {
+            document.getElementById('view-end').textContent = 'No end time available';
+        }
 
             // Delete session
             document.getElementById('delete-session').onclick = function() {
