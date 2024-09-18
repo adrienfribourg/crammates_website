@@ -54,51 +54,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to fetch and display study sessions
     function fetchSessions() {
-        function fetchSessions() {
-    fetch('/get_sessions')
-        .then(response => response.json())
-        .then(sessions => {
-            console.log('Sessions received:', sessions); // Log sessions received from the backend
+        console.log('Fetching sessions...'); // Debugging log
+        fetch('/get_sessions')
+            .then(response => response.json())
+            .then(sessions => {
+                const sessionList = document.getElementById('session-list');
+                sessionList.innerHTML = ''; // Clear the list before appending
 
-            const sessionList = document.getElementById('session-list');
-            sessionList.innerHTML = ''; // Clear the list before appending
+                if (sessions.length > 0) {
+                    sessions.forEach(session => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${session.title} on ${session.date}`;
 
-            if (sessions.length > 0) {
-                sessions.forEach(session => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = `${session.topic} on ${session.date} at ${session.time}, Location: ${session.location}`;
+                        // Add delete button for each session
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.classList.add('btn', 'btn-danger');
+                        deleteButton.setAttribute('data-id', session.id);  // Add session id to the button
+                        deleteButton.addEventListener('click', function() {
+                            console.log('Delete button clicked for session ID:', session.id); // Add this line
+                            if (confirm('Are you sure you want to delete this session?')) {
+                                deleteSession(session.id);
+                            }
+                        });
 
-                    // Add delete button for each session
-                    const deleteButton = document.createElement('button');
-                    deleteButton.textContent = 'Delete';
-                    deleteButton.classList.add('btn', 'btn-danger');
-                    deleteButton.setAttribute('data-id', session.id);  // Add session id to the button
-
-                    console.log('Creating delete button for session:', session.id); // Log session ID before attaching click event
-
-                    deleteButton.addEventListener('click', function() {
-                        console.log('Delete button clicked for session ID:', session.id); // Log when button is clicked
-                        if (confirm('Are you sure you want to delete this session?')) {
-                            deleteSession(session.id);
-                        }
+                        listItem.appendChild(deleteButton);
+                        sessionList.appendChild(listItem);
                     });
-
-                    listItem.appendChild(deleteButton);
-                    sessionList.appendChild(listItem);
-                });
-            } else {
-                sessionList.textContent = 'No study sessions found.';
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching sessions:', error);
-        });
-    }    
+                } else {
+                    sessionList.textContent = 'No study sessions found.';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching sessions:', error);
+            });
+    }
 
     // Function to delete a session
     function deleteSession(sessionId) {
-        console.log('Deleting session with ID:', sessionId);  // Log when deleteSession is called
-
+        console.log('Deleting session with ID:', sessionId);  // Add this line for debugging
         fetch(`/delete_session/${sessionId}`, {
             method: 'DELETE',
             headers: {
@@ -106,16 +100,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
         .then(response => {
-            console.log('Response from delete request:', response); // Log the response from the server
+            console.log('Response from delete:', response); // Add this line
             if (response.ok) {
+                console.log('Session successfully deleted'); // Add this line
                 alert('Session deleted successfully');
                 fetchSessions(); // Refresh session list after deletion
             } else {
+                console.log('Failed to delete session, response status:', response.status); // Debugging
                 alert('Failed to delete session.');
             }
         })
         .catch(error => {
             console.error('Error deleting session:', error);
-        alert('An error occurred while trying to delete the session.');
+            alert('An error occurred while trying to delete the session.');
         });
     }
+
+    // Fetch and display sessions when the page loads
+    if (document.getElementById('session-list')) {
+        fetchSessions();
+    }
+});
