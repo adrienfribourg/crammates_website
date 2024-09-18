@@ -119,8 +119,3 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('An error occurred while trying to delete the session.');
         });
     }
-
-    // Fetch and display sessions when the page loads
-    if (document.getElementById('session-list')) {
-        fetchSessions();
-    }
