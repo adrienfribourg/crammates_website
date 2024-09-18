@@ -124,4 +124,3 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('session-list')) {
         fetchSessions();
     }
-});
