@@ -146,11 +146,14 @@ def delete_session(session_id):
         # Print session details for debugging
         print(f"Deleting session: {session.title}, ID: {session.id}")
 
-        # Delete the session
+        # Attempt to delete the session
         db.session.delete(session)
-        db.session.commit()
-        
+
+        # Add logging before and after committing the deletion
+        print("Attempting to commit the deletion to the database")
+        db.session.commit()  # Commit the deletion
         print(f"Session deleted: {session.id}")
+
         return jsonify({'success': True}), 200
 
     except Exception as e:
