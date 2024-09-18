@@ -94,10 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error fetching sessions:', error);
         });
     }    
-            .catch(error => {
-                console.error('Error fetching sessions:', error);
-            });
-    }
 
     // Function to delete a session
     function deleteSession(sessionId) {
