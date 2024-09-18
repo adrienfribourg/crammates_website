@@ -144,15 +144,16 @@ def delete_session(session_id):
             return jsonify({'success': False, 'error': 'Session not found or you do not have permission to delete this session.'}), 404
 
         # Print session details for debugging
-        print(f"Deleting session: {session.title}, ID: {session.id}")
+        print(f"Attempting to delete session: {session.title}, ID: {session.id}")
 
-        # Attempt to delete the session
+        # Delete the session
         db.session.delete(session)
+        print("Session deleted from the session but not committed yet")
 
-        # Add logging before and after committing the deletion
+        # Commit the changes
         print("Attempting to commit the deletion to the database")
-        db.session.commit()  # Commit the deletion
-        print(f"Session deleted: {session.id}")
+        db.session.commit()
+        print(f"Session deletion committed: {session.id}")
 
         return jsonify({'success': True}), 200
 
